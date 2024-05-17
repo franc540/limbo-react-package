@@ -1,0 +1,15 @@
+{
+  "name": "limbo-react-package",
+  "version": "1.0.0",
+  "description": "Paquete para crear estructura base de componente reactjs para limbo",
+  "main": "create-structure.js",
+  "bin": {
+    "limbo-react-package": "./create-structure.js"
+  },
+  "scripts": {
+    "limbo-react-package": "node create-structure.js"
+  },
+  "keywords": [],
+  "author": "Webinfo TEAM",
+  "license": "ISC"
+}
