@@ -151,6 +151,7 @@ templates.indexhtml=`<!DOCTYPE html>
   </head>
   <body>
       <div id="root"></div>
+      <script>var params={}</script>
   </body>
   </html>`;
 
