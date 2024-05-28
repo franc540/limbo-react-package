@@ -18,6 +18,8 @@ templates.indexjs= `import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
 
+const mode = process.env.NODE_ENV;
+
 if(typeof jQuery !== 'undefined'){
   jQuery.fn.react_render_${projectName.replaceAll('-','_')} = function (params) {
 
@@ -29,6 +31,11 @@ if(typeof jQuery !== 'undefined'){
       render();
     });
   };  
+}
+if(mode == 'development'){
+  const render = ()=>{ReactDOM.render(<${classname} {...params}/>,document.getElementById('root') );}
+  module.hot && module.hot.accept('./app', () => {render();});
+  render();
 }
 `;
 
@@ -130,11 +137,24 @@ templates.package=`{
       }
   }`;
 
+templates.indexhtml=`<!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Test ${projectName}</title>
+  </head>
+  <body>
+      <div id="root"></div>
+  </body>
+  </html>`;
+
 let files = {
   'src/index.js':templates.indexjs,
   'webpack.config.js': templates.webpack,
   'src/app.js': templates.app,
-  'package.json': templates.package
+  'package.json': templates.package,
+  'index.html': templates.indexhtml
 };
 files[`src/components/${projectName}/${projectName}.js`] = templates.component;
 
