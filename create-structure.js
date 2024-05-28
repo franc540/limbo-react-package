@@ -119,7 +119,6 @@ templates.package=`{
       "dependencies": {
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
-        "limbo-react-jquery-extend": "^1.0.0",
         "axios": "^1.4.0"
       },
       "devDependencies": {
