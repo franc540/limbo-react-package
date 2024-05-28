@@ -97,6 +97,12 @@ templates.webpack=`const path = require('path');
         }
       ],
     },
+    plugins: [
+      new HTMLWebpackPlugin({
+        filename: "index.html",
+        template: "./index.html",
+      }),
+    ],
     devServer: {
       hot: true,
       host:'localhost',
