@@ -33,7 +33,7 @@ if(typeof jQuery !== 'undefined'){
   };  
 }
 if(mode == 'development'){
-  const render = ()=>{ReactDOM.render(<${classname} {...params}/>,document.getElementById('root') );}
+  const render = ()=>{ReactDOM.render(<App {...params}/>,document.getElementById('root') );}
   module.hot && module.hot.accept('./app', () => {render();});
   render();
 }
