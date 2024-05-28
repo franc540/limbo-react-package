@@ -15,26 +15,29 @@ const directories = [
 
 let templates={};
 templates.indexjs= `import React from 'react';
-  import ReactDOM from 'react-dom';
-  import ${classname} from './components/${projectName}/${projectName}';
+import ReactDOM from 'react-dom';
+import App from './app';
 
-  if(typeof jQuery !== 'undefined'){
-    jQuery.fn.react_render_${projectName.replaceAll('-','_')} = function (params) {
+if(typeof jQuery !== 'undefined'){
+  jQuery.fn.react_render_${projectName.replaceAll('-','_')} = function (params) {
 
-      return this.each(function () {
-        ReactDOM.render(
-          <${classname} {...params}/>,
-          this
-          );
-      });
-    };  
-  }else{
-    ReactDOM.render(
-      <${classname} {...params}/>,
-      document.getElementById(area_target)
-    );
-  }
-  `;
+    return this.each(function () {
+      const render = ()=>{
+        ReactDOM.render(<App {...params}/>, this);
+      }
+      module.hot && module.hot.accept('./app', () => {render();});
+      render();
+    });
+  };  
+}
+`;
+
+templates.app = `import React, { useState, useEffect } from "react";
+import ${classname} from './components/${projectName}/${projectName}';
+const  App =(props)=>{
+  return (<><${classname} {...props} /></>)
+}
+export default App;`;
 
 templates.component=`import React, { useState, useEffect } from "react";
 export default function ${classname}(props) {
@@ -49,7 +52,7 @@ templates.webpack=`const path = require('path');
   module.exports = {
     entry: './src/index.js',
     output: {
-      filename: 'ba-${projectName}.js',
+      filename: '${projectName}.js',
       path: path.resolve(__dirname, 'dist'),
     },
     mode: 'production',
@@ -87,36 +90,15 @@ templates.webpack=`const path = require('path');
         }
       ],
     },
-    plugins: [
-      new HTMLWebpackPlugin({
-        filename: "index.html",
-        template: "./index.html",
-      }),
-    ],
     devServer: {
-      static: './dist',
-      hot: true
-    },
+      hot: true,
+      host:'localhost',
+      port: 8888,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+    }
   };`;
-
-templates.indexhtml=`<!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Webpack basics</title>
-      <script>
-          var params={};
-          var area_target = 'area-render-${projectName}';
-      </script>
-  </head>
-  <body>
-      <div class="container">
-          <div id="area-render-${projectName}">
-          </div>
-      </div>
-  </body>
-  </html>`;
 
 templates.package=`{
       "name": "${projectName}",
@@ -128,9 +110,10 @@ templates.package=`{
           "build": "webpack --mode production"
       },
       "dependencies": {
-          "react": "^17.0.2",
-          "react-dom": "^17.0.2",
-          "axios": "^1.4.0"
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "limbo-react-jquery-extend": "^1.0.0",
+        "axios": "^1.4.0"
       },
       "devDependencies": {
           "@babel/core": "^7.22.10",
@@ -150,7 +133,7 @@ templates.package=`{
 let files = {
   'src/index.js':templates.indexjs,
   'webpack.config.js': templates.webpack,
-  'index.html': templates.indexhtml,
+  'src/app.js': templates.app,
   'package.json': templates.package
 };
 files[`src/components/${projectName}/${projectName}.js`] = templates.component;
